@@ -6,6 +6,7 @@
         <tbody :class="[prefixCls + '-tbody']">
             <template v-for="(row, index) in data">
                 <table-tr
+                    v-if="rowChildShow(row._index)"
                     :row="row"
                     :key="row._rowKey"
                     :prefix-cls="prefixCls"
@@ -13,11 +14,11 @@
                     @mouseleave.native.stop="handleMouseOut(row._index)"
                     @click.native="clickCurrentRow(row._index)"
                     @dblclick.native.stop="dblclickCurrentRow(row._index)">
-                    <td v-for="column in columns" :class="alignCls(column, row)">
+                    <td v-for="(column, colIndex) in columns" :class="alignCls(column, row)">
                         <Cell
                             :fixed="fixed"
                             :prefix-cls="prefixCls"
-                            :row="row"
+                            :row="processRow(row._index)"
                             :key="column._columnKey"
                             :column="column"
                             :natural-index="index"
@@ -25,6 +26,8 @@
                             :checked="rowChecked(row._index)"
                             :disabled="rowDisabled(row._index)"
                             :expanded="rowExpanded(row._index)"
+                            :indent="row._indent"
+                            :showIndent="!colIndex"
                         ></Cell>
                     </td>
                 </table-tr>
@@ -95,7 +98,16 @@
             },
             dblclickCurrentRow (_index) {
                 this.$parent.dblclickCurrentRow(_index);
+            },
+            rowChildShow(_index) {
+                const _row = this.objData[_index];
+
+                console.log('showrow: ', !(_row._indent - 1) || _row._isChildExpand);
+                return !(_row._indent - 1) || _row._isChildExpand;
+            },
+            processRow(_index) {
+                return this.objData[_index];
             }
-        }
+        },
     };
 </script>

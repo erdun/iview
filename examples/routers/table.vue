@@ -793,7 +793,7 @@
             <Table height="200" border :columns="columns2" :data="data4"></Table>
         </div>
         <br><br><br>
-        <Table width="550" height="200" border :columns="columns2" :data="data4"></Table>
+        <Table border :columns="columns2" :data="data5"></Table>
     </div>
 </template>
 <script>
@@ -804,7 +804,6 @@
                     {
                         title: 'Name',
                         key: 'name',
-                        width: 100,
 //                        fixed: 'left'
                     },
                     {
@@ -835,7 +834,6 @@
                     {
                         title: 'Action',
                         key: 'action',
-                        fixed: 'right',
                         width: 120,
                         render: (h, params) => {
                             return h('div', [
@@ -915,6 +913,54 @@
                     {
                         name: 'Jon Snow',
                         age: 26,
+                        address: 'Ottawa No. 2 Lake Park',
+                        province: 'Canada',
+                        city: 'Ottawa',
+                        zip: 100000
+                    }
+                ],
+                data5: [
+                    {
+                        name: 'Joe Black',
+                        age: 1,
+                        address: 'Sydney No. 1 Lake Park',
+                        province: 'Australian',
+                        city: 'Sydney',
+                        zip: 100000
+                    },
+                    {
+                        name: 'Jon Snow',
+                        age: 2,
+                        address: 'Ottawa No. 2 Lake Park',
+                        province: 'Canada',
+                        city: 'Ottawa',
+                        zip: 100000,
+                        children: [{
+                            name: 'Jon Snow',
+                            age: 21,
+                            address: 'Ottawa No. 2 Lake Park',
+                            province: 'Canada',
+                            city: 'Ottawa',
+                            zip: 100000,
+                        }, {
+                            name: 'Jon Snow',
+                            age: 22,
+                            address: 'Ottawa No. 2 Lake Park',
+                            province: 'Canada',
+                            city: 'Ottawa',
+                            zip: 100000,
+                        }, {
+                            name: 'Jon Snow',
+                            age: 23,
+                            address: 'Ottawa No. 2 Lake Park',
+                            province: 'Canada',
+                            city: 'Ottawa',
+                            zip: 100000,
+                        }]
+                    },
+                    {
+                        name: 'Jon Snow',
+                        age: 3,
                         address: 'Ottawa No. 2 Lake Park',
                         province: 'Canada',
                         city: 'Ottawa',

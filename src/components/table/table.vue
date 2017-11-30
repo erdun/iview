@@ -186,7 +186,7 @@
                 bodyRealHeight: 0,
                 scrollBarWidth: getScrollBarSize(),
                 currentContext: this.context,
-                cloneData: deepCopy(this.data)    // when Cell has a button to delete row data, clickCurrentRow will throw an error, so clone a data
+                cloneData: this.makeObjData()    // when Cell has a button to delete row data, clickCurrentRow will throw an error, so clone a data
             };
         },
         computed: {
@@ -451,6 +451,31 @@
                 this.objData[_index]._isExpanded = status;
                 this.$emit('on-expand', JSON.parse(JSON.stringify(this.cloneData[_index])), status);
             },
+            toggleChildExpand(_index) {
+                let data = {};
+
+                for (let i in this.objData) {
+                    if (parseInt(i) === _index) {
+                        data = this.objData[i];
+                    }
+                }
+
+                const status = !data._isChildExpand;
+                const changeStatus = (children, status) => {
+                    for (let i = 0; i < children.length; i++) {
+                        children[i]._isChildExpand = status;
+
+                        if (children[i].children) {
+                            changeStatus(children[i].children, status);
+                        }
+                    }
+                };
+
+                data._isChildExpand = status;
+                data.children && changeStatus(data.children, status);
+
+                this.$emit('on-childexpand', JSON.parse(JSON.stringify(this.cloneData[_index])), status);
+            },
             selectAll (status) {
                 // this.rebuildData.forEach((data) => {
                 //     if(this.objData[data._index]._isDisabled){
@@ -594,11 +619,31 @@
                 this.$emit('on-filter-change', this.cloneColumns[index]);
             },
             makeData () {
-                let data = deepCopy(this.data);
-                data.forEach((row, index) => {
-                    row._index = index;
-                    row._rowKey = rowKey++;
-                });
+                const _copyData = deepCopy(this.data);
+                const data = [];
+
+                const renderData = (datas, indent = 0, parentIndex = 0) => {
+                    ++indent;
+
+                    datas.forEach((row, index) => {
+                        row._index = parentIndex * 100 + index;
+                        row._rowKey = rowKey++;
+                        row._indent = indent;
+                        row._isChildExpand = false;
+                        data.push(row);
+
+                        if (row.children) {
+                            row._hasIndent = true;
+
+                            renderData(row.children, indent, row._index);
+                        } else {
+                            row._hasIndent = false;
+                        }
+                    });
+                };
+
+                renderData(_copyData);
+
                 return data;
             },
             makeDataWithSort () {
@@ -629,32 +674,34 @@
                 return data;
             },
             makeObjData () {
-                let data = {};
-                this.data.forEach((row, index) => {
-                    const newRow = deepCopy(row);// todo 直接替换
-                    newRow._isHover = false;
-                    if (newRow._disabled) {
-                        newRow._isDisabled = newRow._disabled;
+                const _data = this.makeData();
+                const data = {};
+
+                _data.forEach((row) => {
+                    row._isHover = false;
+                    if (row._disabled) {
+                        row._isDisabled = row._disabled;
                     } else {
-                        newRow._isDisabled = false;
+                        row._isDisabled = false;
                     }
-                    if (newRow._checked) {
-                        newRow._isChecked = newRow._checked;
+                    if (row._checked) {
+                        row._isChecked = row._checked;
                     } else {
-                        newRow._isChecked = false;
+                        row._isChecked = false;
                     }
-                    if (newRow._expanded) {
-                        newRow._isExpanded = newRow._expanded;
+                    if (row._expanded) {
+                        row._isExpanded = row._expanded;
                     } else {
-                        newRow._isExpanded = false;
+                        row._isExpanded = false;
                     }
-                    if (newRow._highlight) {
-                        newRow._isHighlight = newRow._highlight;
+                    if (row._highlight) {
+                        row._isHighlight = row._highlight;
                     } else {
-                        newRow._isHighlight = false;
+                        row._isHighlight = false;
                     }
-                    data[index] = newRow;
+                    data[row._index] = row;
                 });
+
                 return data;
             },
             makeColumns () {
@@ -754,6 +801,7 @@
             data: {
                 handler () {
                     const oldDataLen = this.rebuildData.length;
+                    const self = this;
                     this.objData = this.makeObjData();
                     this.rebuildData = this.makeDataWithSortAndFilter();
                     this.handleResize();
@@ -762,7 +810,7 @@
                     }
                     // here will trigger before clickCurrentRow, so use async
                     setTimeout(() => {
-                        this.cloneData = deepCopy(this.data);
+                        this.cloneData = self.makeObjData();
                     }, 0);
                 },
                 deep: true

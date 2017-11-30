@@ -4,13 +4,20 @@
         <template v-if="renderType === 'selection'">
             <Checkbox :value="checked" @click.native.stop="handleClick" @on-change="toggleSelect" :disabled="disabled"></Checkbox>
         </template>
-        <template v-if="renderType === 'html'"><span v-html="row[column.key]"></span></template>
-        <template v-if="renderType === 'normal'"><span>{{row[column.key]}}</span></template>
         <template v-if="renderType === 'expand' && !row._disableExpand">
             <div :class="expandCls" @click="toggleExpand">
                 <Icon type="ios-arrow-right"></Icon>
             </div>
         </template>
+        <ExpandCell
+            :prefixCls="prefixCls"
+            :indent="indent"
+            :expandable="this.hasChild"
+            :onExpand="this.toggleChildExpand"
+            :expanded="rowChildShow"
+        />
+        <template v-if="renderType === 'html'"><span v-html="row[column.key]"></span></template>
+        <template v-if="renderType === 'normal'"><span>{{row[column.key]}}</span></template>
         <Cell
             v-if="renderType === 'render'"
             :row="row"
@@ -18,15 +25,16 @@
             :index="index"
             :render="column.render"></Cell>
     </div>
-</template>
+</template> 
 <script>
     import Cell from './expand';
+    import ExpandCell from './expandCell.vue';
     import Icon from '../icon/icon.vue';
     import Checkbox from '../checkbox/checkbox.vue';
 
     export default {
         name: 'TableCell',
-        components: { Icon, Checkbox, Cell },
+        components: { Icon, Checkbox, Cell, ExpandCell },
         props: {
             prefixCls: String,
             row: Object,
@@ -39,13 +47,22 @@
             fixed: {
                 type: [Boolean, String],
                 default: false
-            }
+            },
+            showIndent: {
+                type: Boolean,
+                default: false,
+            },
+            indent: {
+                type: Number,
+                default: 1,
+            },
         },
         data () {
             return {
                 renderType: '',
                 uid: -1,
-                context: this.$parent.$parent.$parent.currentContext
+                context: this.$parent.$parent.$parent.currentContext,
+                hasChild: false,
             };
         },
         computed: {
@@ -66,6 +83,10 @@
                         [`${this.prefixCls}-cell-expand-expanded`]: this.expanded
                     }
                 ];
+            },
+            rowChildShow() {
+                console.log('isexapand: ', this.row._isChildExpand);
+                return this.row._isChildExpand;
             }
         },
         methods: {
@@ -77,7 +98,10 @@
             },
             handleClick () {
                 // 放置 Checkbox 冒泡
-            }
+            },
+            toggleChildExpand() {
+                this.$parent.$parent.$parent.toggleChildExpand(this.index);
+            },
         },
         created () {
             if (this.column.type === 'index') {
@@ -92,6 +116,10 @@
                 this.renderType = 'render';
             } else {
                 this.renderType = 'normal';
+            }
+
+            if(this.row._hasIndent && this.showIndent) {
+                this.hasChild = true;
             }
         }
     };
