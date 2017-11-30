@@ -10,6 +10,7 @@
             </div>
         </template>
         <ExpandCell
+            v-if="showIndent"
             :prefixCls="prefixCls"
             :indent="indent"
             :expandable="this.hasChild"
@@ -85,7 +86,6 @@
                 ];
             },
             rowChildShow() {
-                console.log('isexapand: ', this.row._isChildExpand);
                 return this.row._isChildExpand;
             }
         },

@@ -102,7 +102,6 @@
             rowChildShow(_index) {
                 const _row = this.objData[_index];
 
-                console.log('showrow: ', !(_row._indent - 1) || _row._isChildExpand);
                 return !(_row._indent - 1) || _row._isChildExpand;
             },
             processRow(_index) {

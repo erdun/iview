@@ -4,7 +4,7 @@
         <span
             :style="{'padding-left': `${this.indent * this.indentSpan}px`}"
         />
-        <div v-if="expandable" :class="expandCls" @click.stop="onExpand">
+        <div :class="expandCls" @click.stop="onExpand">
             <Icon type="ios-arrow-right"></Icon>
         </div>
     </div>
@@ -44,7 +44,8 @@
                 return [
                     `${this.prefixCls}-cell-expand`,
                     {
-                        [`${this.prefixCls}-cell-expand-expanded`]: this.expanded
+                        [`${this.prefixCls}-cell-expand-expanded`]: this.expanded,
+                        [`${this.prefixCls}-hidden`]: !this.expandable
                     }
                 ];
             },
