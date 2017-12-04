@@ -102,7 +102,7 @@
             rowChildShow(_index) {
                 const _row = this.objData[_index];
 
-                return !(_row._indent - 1) || _row._isChildExpand;
+                return !_row._isHidden;
             },
             processRow(_index) {
                 return this.objData[_index];

@@ -921,6 +921,11 @@
                 ],
                 data5: [
                     {
+                        type: 'index',
+                        width: 60,
+                        align: 'center'
+                    },
+                    {
                         name: 'Joe Black',
                         age: 1,
                         address: 'Sydney No. 1 Lake Park',
@@ -942,6 +947,28 @@
                             province: 'Canada',
                             city: 'Ottawa',
                             zip: 100000,
+                            children: [{
+                                name: 'Jon Snow',
+                                age: 21,
+                                address: 'Ottawa No. 2 Lake Park',
+                                province: 'Canada',
+                                city: 'Ottawa',
+                                zip: 100000,
+                            }, {
+                                name: 'Jon Snow',
+                                age: 22,
+                                address: 'Ottawa No. 2 Lake Park',
+                                province: 'Canada',
+                                city: 'Ottawa',
+                                zip: 100000,
+                            }, {
+                                name: 'Jon Snow',
+                                age: 23,
+                                address: 'Ottawa No. 2 Lake Park',
+                                province: 'Canada',
+                                city: 'Ottawa',
+                                zip: 100000,
+                            }]
                         }, {
                             name: 'Jon Snow',
                             age: 22,

@@ -464,6 +464,7 @@
                 const changeStatus = (children, status) => {
                     for (let i = 0; i < children.length; i++) {
                         children[i]._isChildExpand = status;
+                        children[i]._isHidden = !status;
 
                         if (children[i].children) {
                             changeStatus(children[i].children, status);
@@ -622,7 +623,7 @@
                 const _copyData = deepCopy(this.data);
                 const data = [];
 
-                const renderData = (datas, indent = 0, parentIndex = 0) => {
+                const renderData = (datas, indent = 0, parentIndex = 0, hidden = false) => {
                     ++indent;
 
                     datas.forEach((row, index) => {
@@ -630,12 +631,13 @@
                         row._rowKey = rowKey++;
                         row._indent = indent;
                         row._isChildExpand = false;
+                        row._isHidden = hidden;
                         data.push(row);
 
                         if (row.children) {
                             row._hasIndent = true;
 
-                            renderData(row.children, indent, row._index);
+                            renderData(row.children, indent, row._index, true);
                         } else {
                             row._hasIndent = false;
                         }
