@@ -634,7 +634,7 @@
                         row._isHidden = hidden;
                         data.push(row);
 
-                        if (row.children) {
+                        if (row.children && row.children.length) {
                             row._hasIndent = true;
 
                             renderData(row.children, indent, row._index, true);
